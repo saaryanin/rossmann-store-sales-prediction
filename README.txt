@@ -18,15 +18,34 @@ Project Structure
 Prerequisites:
 -Python 3.9 (recommended)
 -Internet connection to download necessary Python packages
+
 Environment Setup:
 Clone the repository (if applicable) or download the project files.
 
-Navigate to the project directory:
+Creating a virtual environment:
 
-cd path/to/your/project
+python -m venv venv
+
+Activating the environment:
+
+on Windows:
+
+/venv/scripts/activate
+
+On Mac:
+
+source venv/bin/activate
+
+Install dependencies:
+
+pip install -r requirements.txt
+
 
 Training the Model:
 To train the model on the Rossmann Store Sales dataset, run main.py. This script will load the data, preprocess it, train the model, and save it as xgboost_model.pkl in the models/ folder.
+
+command:
+python main.py
 
 Expected Output:
 After running the training script, main.py will output evaluation metrics such as MAE, MSE, RMSE, and R² for validation data.
@@ -35,10 +54,7 @@ A trained model file (xgboost_model.pkl) will be saved in the models directory.
 Running the API Server:
 The server is implemented using FastAPI. You can start the server using Uvicorn, which is included in requirements.txt.
 
-Navigate to the server folder and Run the server:
-
-
-cd server
+command:
 uvicorn server:app --reload --host 0.0.0.0 --port 8000
 
 Once the server is running, you can access the API documentation at:
