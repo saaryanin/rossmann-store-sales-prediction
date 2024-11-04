@@ -1,0 +1,28 @@
+# Ignore virtual environment folder
+venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+*.dll
+*.dylib
+
+# Ignore large datasets or files over 100MB (adjust the folder if needed)
+datasets/
+*.csv
+*.pkl
+
+# Ignore log files and other OS-specific files
+*.log
+*.DS_Store
+*.env
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore VS Code workspace files
+.vscode/
+
+# Ignore IDE-specific folders (for PyCharm, JetBrains)
+.idea/

@@ -1,0 +1,7 @@
+pandas
+scikit-learn
+xgboost
+joblib
+fastapi
+pydantic
+uvicorn  # for running the FastAPI server
