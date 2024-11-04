@@ -9,7 +9,6 @@ __pycache__/
 *.dylib
 
 # Ignore large datasets or files over 100MB (adjust the folder if needed)
-datasets/
 *.csv
 *.pkl
 
