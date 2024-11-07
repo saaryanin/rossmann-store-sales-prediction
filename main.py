@@ -5,15 +5,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 import joblib  # Import joblib to save the model
 
-# Define paths for train, store, and model datasets
+#paths for train, store, and model datasets
 TRAIN_DATA_PATH = os.path.join('datasets', 'train.csv')
 STORE_DATA_PATH = os.path.join('datasets', 'store.csv')
 MODEL_PATH = os.path.join('models', 'xgboost_model.pkl')  # Path to save the model
 
 def load_data(file_path):
-    """
-    Load dataset with low_memory=False to handle DtypeWarning.
-    """
+    #Load dataset with low_memory=False
     try:
         data = pd.read_csv(file_path, low_memory=False)
         print(f"Data loaded successfully from {file_path}")
@@ -26,9 +24,7 @@ def load_data(file_path):
         return None
 
 def preprocess_data(train_data, store_data):
-    """
-    Merge, clean, and perform feature engineering on the data, including outlier removal using IQR.
-    """
+    # Merge, clean, and perform feature engineering on the data, including using IQR.
     data = train_data.merge(store_data, on='Store', how='left')
 
     # Convert Date to datetime format and extract features
@@ -45,17 +41,15 @@ def preprocess_data(train_data, store_data):
     # Fill missing values in CompetitionDistance
     data['CompetitionDistance'] = data['CompetitionDistance'].fillna(data['CompetitionDistance'].mean())
 
-    # IQR-based outlier removal for the target variable (Sales)
+    # IQR on Sales
     Q1 = data['Sales'].quantile(0.25)
     Q3 = data['Sales'].quantile(0.75)
     IQR = Q3 - Q1
     data = data[(data['Sales'] >= (Q1 - 1.5 * IQR)) & (data['Sales'] <= (Q3 + 1.5 * IQR))]
 
-    # Define features and target
     features = ['Store', 'DayOfWeek', 'Promo', 'Year', 'Month', 'Day', 'CompetitionDistance']
     target = 'Sales'
 
-    # Select features and target
     X = data[features]
     y = data[target]
     return X, y
@@ -70,18 +64,16 @@ def main():
 
     X, y = preprocess_data(train_data, store_data)
 
-    # Split data into training and validation sets
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Train model with optimal parameters
     model = XGBRegressor(n_estimators=600, max_depth=6, learning_rate=0.1, random_state=42)
     model.fit(X_train, y_train)
 
-    # Serialize and save the model
+    # saving the model
     joblib.dump(model, MODEL_PATH)
     print(f"Model saved to {MODEL_PATH}")
 
-    # Predict and evaluate on the validation set
+    #predict and evaluate on the validation set
     y_pred = model.predict(X_val)
     mae = mean_absolute_error(y_val, y_pred)
     mse = mean_squared_error(y_val, y_pred)

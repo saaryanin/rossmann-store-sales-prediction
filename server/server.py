@@ -4,7 +4,6 @@ import joblib
 import pandas as pd
 import os
 
-# Initialize FastAPI app
 app = FastAPI()
 
 # Load the model
@@ -12,7 +11,6 @@ MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'models', 'xgboost_mo
 model = joblib.load(MODEL_PATH)
 
 
-# Define input schemas for validation
 class SinglePredictionRequest(BaseModel):
     Store: int
     DayOfWeek: int
@@ -27,12 +25,9 @@ class BatchPredictionRequest(BaseModel):
     data: list[SinglePredictionRequest]
 
 
-# Define a helper function to preprocess input data
 def preprocess_input(data):
-    """
-    Preprocesses input data to match the model's feature requirements.
-    Assumes the input is either a single dictionary or a list of dictionaries.
-    """
+    #Preprocesses input data to match the model's feature requirements.
+    #Assumes the input is either a single dictionary or a list of dictionaries.
     df = pd.DataFrame([data.dict()]) if isinstance(data, SinglePredictionRequest) else pd.DataFrame(
         [item.dict() for item in data])
 
@@ -51,11 +46,9 @@ def health_check():
 @app.post("/predict")
 def predict_single(request: SinglePredictionRequest):
     try:
-        # Preprocess input and make prediction
         processed_data = preprocess_input(request)
         prediction = model.predict(processed_data)[0]
 
-        # Convert the prediction to a standard Python float
         return {"prediction": float(prediction)}
     except Exception as e:
         print(f"Error during prediction: {e}")  # Log error details to the console
@@ -66,11 +59,11 @@ def predict_single(request: SinglePredictionRequest):
 @app.post("/predict_batch")
 def predict_batch(request: BatchPredictionRequest):
     try:
-        # Preprocess input and make batch predictions
+
         processed_data = preprocess_input(request.data)
         predictions = model.predict(processed_data)
 
-        # Convert each prediction to a float
+
         predictions = [float(pred) for pred in predictions]
 
         return {"predictions": predictions}
